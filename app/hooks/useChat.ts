@@ -17,7 +17,7 @@ export function useChat(zg: ZegoEngine | null) {
       const { Cmd, SeqId, Data } = msg;
 
       if (Cmd === 3) {
-        // ASR 文本 (用户说话)
+        // ASR text (user speech)
         const cache = asrCacheRef.current.get(Data.MessageId);
         if (!cache || SeqId > cache.seqId) {
           asrCacheRef.current.set(Data.MessageId, { seqId: SeqId, text: Data.Text });
@@ -44,7 +44,7 @@ export function useChat(zg: ZegoEngine | null) {
           asrCacheRef.current.delete(Data.MessageId);
         }
       } else if (Cmd === 4) {
-        // LLM 文本 (智能体回复)
+        // LLM text (agent response)
         const cache = llmCacheRef.current.get(Data.MessageId);
         const newText = cache ? cache.text + Data.Text : Data.Text;
         llmCacheRef.current.set(Data.MessageId, { seqId: SeqId, text: newText, isComplete: Data.EndFlag });

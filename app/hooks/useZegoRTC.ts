@@ -28,10 +28,10 @@ export function useZegoRTC() {
     const server = process.env.NEXT_PUBLIC_ZEGO_SERVER || '';
 
     if (!appId || !server) {
-      throw new Error('ZEGO 配置未设置');
+      throw new Error('ZEGO config not set');
     }
 
-    // 动态导入以避免 SSR 问题
+    // Dynamic import to avoid SSR issues
     const { ZegoExpressEngine } = await import('zego-express-engine-webrtc');
     zgRef.current = new ZegoExpressEngine(appId, server);
     return zgRef.current;
@@ -44,34 +44,34 @@ export function useZegoRTC() {
     try {
       const zg = await initEngine();
 
-      // 生成唯一 ID
+      // Generate unique IDs
       const timestamp = Date.now();
       roomIdRef.current = `room${timestamp}`;
       userIdRef.current = `user${timestamp}`;
       userStreamIdRef.current = `stream${timestamp}`;
 
-      // 获取 Token
+      // Get token
       const tokenRes = await fetch('/api/zego/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: userIdRef.current })
       });
       const tokenData: ApiResponse<TokenResponse> = await tokenRes.json();
-      if (tokenData.code !== 0 || !tokenData.data) throw new Error(tokenData.message || '获取 Token 失败');
+      if (tokenData.code !== 0 || !tokenData.data) throw new Error(tokenData.message || 'Failed to get token');
 
-      // 登录房间
+      // Login room
       await zg.loginRoom(roomIdRef.current, tokenData.data.token, {
         userID: userIdRef.current,
         userName: userIdRef.current
       });
 
-      // 创建本地音频流
+      // Create local audio stream
       localStreamRef.current = await zg.createZegoStream({ camera: { video: false, audio: true } });
       if (localStreamRef.current) {
         await zg.startPublishingStream(userStreamIdRef.current, localStreamRef.current);
       }
 
-      // 通知后台开始通话
+      // Notify backend to start call
       const startRes = await fetch('/api/zego/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,19 +82,19 @@ export function useZegoRTC() {
         })
       });
       const startData: ApiResponse<StartCallResponse> = await startRes.json();
-      if (startData.code !== 0 || !startData.data) throw new Error(startData.message || '开始通话失败');
+      if (startData.code !== 0 || !startData.data) throw new Error(startData.message || 'Failed to start call');
 
       agentInstanceIdRef.current = startData.data.agentInstanceId;
 
-      // 监听远端流
+      // Listen for remote streams
       zg.on('roomStreamUpdate', async (roomID: string, updateType: string, streamList: Array<{ streamID: string }>) => {
         if (updateType === 'ADD') {
           for (const stream of streamList) {
-            // 拉取远端音频流
+            // Pull remote audio stream
             const remoteStream = await zg.startPlayingStream(stream.streamID);
             if (remoteStream) {
               remoteStreamRef.current = remoteStream;
-              // 创建 audio 元素播放远端音频
+              // Create audio element to play remote audio
               if (!audioElementRef.current) {
                 audioElementRef.current = document.createElement('audio');
                 audioElementRef.current.autoplay = true;
@@ -106,7 +106,7 @@ export function useZegoRTC() {
             }
           }
         } else if (updateType === 'DELETE') {
-          // 停止播放
+          // Stop playback
           if (audioElementRef.current) {
             audioElementRef.current.srcObject = null;
           }
@@ -116,7 +116,7 @@ export function useZegoRTC() {
 
       setIsConnected(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '连接失败');
+      setError(err instanceof Error ? err.message : 'Connection failed');
       console.error('Start call error:', err);
     } finally {
       setIsLoading(false);
@@ -142,7 +142,7 @@ export function useZegoRTC() {
         await zgRef.current.logoutRoom();
       }
 
-      // 清理音频播放
+      // Clean up audio playback
       if (audioElementRef.current) {
         audioElementRef.current.srcObject = null;
         audioElementRef.current.remove();

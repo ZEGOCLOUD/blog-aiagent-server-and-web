@@ -19,7 +19,7 @@ export function MessageList({ messages }: MessageListProps) {
   if (messages.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center text-zinc-400">
-        <p>开始与 AI 对话吧</p>
+        <p>Start a conversation with AI</p>
       </div>
     );
   }

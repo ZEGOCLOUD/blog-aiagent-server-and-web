@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-// 生成 ZEGO Token
+// Generate ZEGO Token
 export function generateToken(
   appId: number,
   userId: string,
@@ -37,7 +37,7 @@ export function generateToken(
   return '04' + buf.toString('base64');
 }
 
-// 生成 ZEGO API 签名
+// Generate ZEGO API signature
 export function generateSignature(
   appId: number,
   signatureNonce: string,
@@ -48,7 +48,7 @@ export function generateSignature(
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-// 发送 ZEGO AI Agent API 请求
+// Send ZEGO AI Agent API request
 export async function sendZegoRequest<T>(action: string, body: object): Promise<T> {
   const appId = parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID || '0');
   const serverSecret = process.env.ZEGO_SERVER_SECRET || '';

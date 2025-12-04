@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ code: -1, message: 'ZEGO config not set' }, { status: 500 });
     }
 
-    const token = generateToken(appId, userId, serverSecret, 3600); // 1小时有效期
+    const token = generateToken(appId, userId, serverSecret, 3600); // 1 hour validity
 
     return NextResponse.json({ code: 0, data: { token } });
   } catch (error) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendZegoRequest } from '../utils';
 
-// 注册智能体（如果尚未注册）
+// Register agent (if not already registered)
 async function ensureAgentRegistered(agentId: string, forceUpdate = false) {
   const agentConfig = {
     AgentId: agentId,
@@ -35,12 +35,12 @@ async function ensureAgentRegistered(agentId: string, forceUpdate = false) {
 
   try {
     if (forceUpdate) {
-      // 先尝试注销旧的智能体
+      // Try to unregister old agent first
       try {
         await sendZegoRequest('UnregisterAgent', { AgentId: agentId });
         console.log('Agent unregistered for update');
       } catch {
-        // 忽略注销错误
+        // Ignore unregister errors
       }
     }
 
@@ -48,10 +48,10 @@ async function ensureAgentRegistered(agentId: string, forceUpdate = false) {
     console.log('Agent registered successfully');
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    // 410001008 表示智能体已注册
+    // 410001008 means agent already registered
     if (errorMessage.includes('410001008')) {
       console.log('Agent already registered, updating...');
-      // 使用 UpdateAgent 更新配置
+      // Use UpdateAgent to update config
       try {
         await sendZegoRequest('UpdateAgent', agentConfig);
         console.log('Agent updated successfully');
@@ -79,10 +79,10 @@ export async function POST(request: NextRequest) {
     const agentUserId = `agent_${roomId}`;
     const agentStreamId = `agent_stream_${roomId}`;
 
-    // 确保智能体已注册
+    // Ensure agent is registered
     await ensureAgentRegistered(agentId);
 
-    // 创建智能体实例
+    // Create agent instance
     const result = await sendZegoRequest<{ AgentInstanceId: string }>('CreateAgentInstance', {
       AgentId: agentId,
       UserId: userId,

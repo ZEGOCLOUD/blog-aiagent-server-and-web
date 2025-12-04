@@ -1,4 +1,4 @@
-// 对话消息类型
+// Chat message type
 export interface ChatMessage {
   id: string;
   role: 'user' | 'agent';
@@ -7,12 +7,12 @@ export interface ChatMessage {
   isComplete: boolean;
 }
 
-// RTC 房间自定义消息
+// RTC room custom message
 export interface ZegoRoomMessage {
   Timestamp: number;
   SeqId: number;
   Round: number;
-  Cmd: number; // 3: ASR文本, 4: LLM文本
+  Cmd: number; // 3: ASR text, 4: LLM text
   Data: {
     Text: string;
     MessageId: string;
@@ -20,7 +20,7 @@ export interface ZegoRoomMessage {
   };
 }
 
-// API 响应
+// API response
 export interface ApiResponse<T = unknown> {
   code: number;
   message?: string;

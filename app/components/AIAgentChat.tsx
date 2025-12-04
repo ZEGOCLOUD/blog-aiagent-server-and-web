@@ -31,29 +31,29 @@ export function AIAgentChat() {
 
   return (
     <div className="flex h-screen w-full">
-      {/* 左侧控制区域 */}
+      {/* Left control area */}
       <div className="flex flex-col items-center justify-center w-1/2 bg-zinc-50 dark:bg-zinc-900 p-8">
         <div className="flex flex-col items-center gap-8">
           <h1 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100">
             ZEGO AI Agent
           </h1>
 
-          {/* 通话状态指示 */}
+          {/* Call status indicator */}
           <div className="flex items-center gap-2">
             <span className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-zinc-300'}`} />
             <span className="text-sm text-zinc-600 dark:text-zinc-400">
-              {isConnected ? '通话中' : '未连接'}
+              {isConnected ? 'In Call' : 'Disconnected'}
             </span>
           </div>
 
-          {/* 错误提示 */}
+          {/* Error message */}
           {error && (
             <div className="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          {/* 控制按钮 */}
+          {/* Control buttons */}
           <div className="flex gap-4">
             <button
               onClick={handleToggleCall}
@@ -64,7 +64,7 @@ export function AIAgentChat() {
                   : 'bg-blue-500 hover:bg-blue-600 text-white'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              {isLoading ? '处理中...' : isConnected ? '结束通话' : '开始与AI通话'}
+              {isLoading ? 'Processing...' : isConnected ? 'End Call' : 'Start AI Call'}
             </button>
 
             {isConnected && (
@@ -76,21 +76,21 @@ export function AIAgentChat() {
                     : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-800'
                 }`}
               >
-                {isMuted ? '取消静音' : '静音'}
+                {isMuted ? 'Unmute' : 'Mute'}
               </button>
             )}
           </div>
 
           <p className="text-sm text-zinc-500 max-w-xs text-center">
-            点击开始与AI通话后，可以直接用语音与AI进行对话
+            Click to start a voice conversation with AI
           </p>
         </div>
       </div>
 
-      {/* 右侧消息列表 */}
+      {/* Right message list */}
       <div className="flex flex-col w-1/2 border-l border-zinc-200 dark:border-zinc-700">
         <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
-          <h2 className="font-medium text-zinc-800 dark:text-zinc-100">对话记录</h2>
+          <h2 className="font-medium text-zinc-800 dark:text-zinc-100">Conversation</h2>
         </div>
         <MessageList messages={messages} />
       </div>
