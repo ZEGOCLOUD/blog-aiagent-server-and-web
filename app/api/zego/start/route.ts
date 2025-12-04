@@ -12,6 +12,12 @@ async function ensureAgentRegistered(agentId: string, forceUpdate = false) {
       Model: process.env.LLM_MODEL,
       SystemPrompt: process.env.SYSTEM_PROMPT || 'You are a friendly AI assistant. Please respond concisely.'
     },
+    ASR: {
+      Vendor: "Tencent",
+      Params: {
+          engine_model_type: "16k_en"
+      }
+    },
     TTS: {
       Vendor: process.env.TTS_VENDOR,
       Params: {
